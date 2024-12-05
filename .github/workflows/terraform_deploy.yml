@@ -64,7 +64,7 @@ jobs:
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -var "public_key=${{ secrets.PUBLIC_KEY }}"
       working-directory: ./infra  
       #run: terraform plan -var-file=env_tfvars/${{ vars.ENV_NAME }}.tfvars
 

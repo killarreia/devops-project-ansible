@@ -1,6 +1,6 @@
 resource "aws_key_pair" "default" {
   key_name   = "my-key-pair"
-  public_key = file("~/.ssh/id_ed25519.pub") # Path to your public SSH key
+  public_key = var.public_key
 }
 
 resource "aws_security_group" "allow_ssh" {
@@ -12,7 +12,7 @@ resource "aws_security_group" "allow_ssh" {
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = ["163.116.169.78"] # Replace with your IP for security
+    cidr_blocks      = ["163.116.169.78/32"] # Replace with your IP for security
   }
 
   egress {
