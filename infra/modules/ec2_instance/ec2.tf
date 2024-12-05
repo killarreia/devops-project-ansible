@@ -1,3 +1,4 @@
+#the AWS Key Pair has to be user-supplied
 resource "aws_key_pair" "default" {
   key_name   = "my-key-pair"
   public_key = var.public_key
