@@ -1,0 +1,74 @@
+name: 'Terraform Apply'
+
+on:
+  workflow_dispatch:
+    # inputs:
+    #   name:
+    #     description: 'Environment Name'
+    #     default: ''
+    #     required: true
+    #     type: choice
+    #     options:
+    #     - dev
+    #     - stg
+    #     - prod
+    #     - pft
+        
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    #environment: ${{ github.event.inputs.name }}
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/github-oidc-role
+          aws-region: ${{ vars.AWS_REGION }}
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+    #   run: |
+    #     if [[ "${{ github.event.inputs.name }}" == "prod" ]]; then
+    #       terraform init -backend-config="backend-config-prod.hcl"
+    #     else
+    #       terraform init -backend-config="backend-config.hcl"
+    #     fi
+        
+    #Setup workspace
+    # - name: Setup workspace
+    #   run: terraform workspace select -or-create ${{ github.event.inputs.name }}
+
+    # # Checks that all Terraform configuration files adhere to a canonical format
+    # - name: Terraform Format
+    #   run: terraform fmt -check
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan  
+      #run: terraform plan -var-file=env_tfvars/${{ vars.ENV_NAME }}.tfvars
+
+      # On push to "main", build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    # - name: Terraform Apply
+    #   run: terraform apply -auto-approve -input=false
+    #   if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+    #  run: terraform apply -var-file=env_tfvars/${{ vars.ENV_NAME }}.tfvars -auto-approve
