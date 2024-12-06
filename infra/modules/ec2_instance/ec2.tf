@@ -1,8 +1,9 @@
 #the AWS Key Pair has to be user-supplied
-resource "aws_key_pair" "default" {
-  key_name   = "my-key-pair"
-  public_key = var.public_key
-}
+#IMPORTANT! running a second time gives an error ... api error InvalidKeyPair.Duplicate: The keypair already exists
+# resource "aws_key_pair" "default" {
+#   key_name   = "my-key-pair"
+#   public_key = var.public_key
+# }
 
 resource "aws_security_group" "ec2" {
   name        = "ec2"
