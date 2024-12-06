@@ -21,7 +21,7 @@ resource "aws_security_group" "ec2" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["89.155.161.101/32"]  # Replace with your IP for security
+    cidr_blocks = ["163.116.169.78/32"]  # Replace with your IP for security
   }
 
   egress {
