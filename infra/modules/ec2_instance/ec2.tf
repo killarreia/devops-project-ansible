@@ -4,16 +4,24 @@ resource "aws_key_pair" "default" {
   public_key = var.public_key
 }
 
-resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+resource "aws_security_group" "ec2" {
+  name        = "ec2"
+  description = "Allow SSH and HTTP inbound traffic"
 
   ingress {
-    description      = "SSH"
+    description      = "Allow SSH"
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = ["163.116.169.78/32"] # Replace with your IP for security
+    cidr_blocks      = ["89.155.161.101/32"] # Replace with your IP for security
+  }
+
+    ingress {
+    description = "Allow HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["89.155.161.101/32"]  # Replace with your IP for security
   }
 
   egress {
@@ -30,7 +38,7 @@ resource "aws_instance" "free_tier" {
   instance_type = "t2.micro" # Free Tier eligible
 
   key_name               = aws_key_pair.default.key_name
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  vpc_security_group_ids = [aws_security_group.ec2.id]
 
   tags = {
     Name = "FreeTierInstance"
