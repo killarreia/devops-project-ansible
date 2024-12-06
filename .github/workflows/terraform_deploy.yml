@@ -64,6 +64,7 @@ jobs:
 
     - name: Terraform Import
       run: terraform import aws_key_pair.my_key_pair my-key-pair
+      working-directory: ./infra  
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
