@@ -1,5 +1,5 @@
 #the AWS Key Pair has to be user-supplied
-resource "aws_key_pair" "my_key_pair" {
+resource "aws_key_pair" "default" {
   key_name   = "my-key-pair"
   public_key = var.public_key
 }
@@ -37,7 +37,7 @@ resource "aws_instance" "free_tier" {
   ami           = "ami-02141377eee7defb9" # Amazon Linux 2023 AMI ID (eu-west-1). Update based on your region.
   instance_type = "t2.micro" # Free Tier eligible
 
-  key_name               = aws_key_pair.my_key_pair.key_name
+  key_name               = aws_key_pair.default.key_name
   vpc_security_group_ids = [aws_security_group.ec2.id]
 
   tags = {
